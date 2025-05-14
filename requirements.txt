@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+openai
+dotenv
+fastapi[all]
+transformers
+torch  # or 'tensorflow' if your model needs it
