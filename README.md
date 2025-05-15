@@ -5,6 +5,7 @@ Welcome to the **FastAPI with integrated AI modal** repository! This repository 
 ## 🛠️ Prerequisites
 
 Before you start, ensure you have the following installed:
+
 - Python (>=3.10 recommended)
 - Jupyter Notebook (optional)
 - conda env manager (optional)
@@ -52,3 +53,18 @@ docker run -p 8000:8000 fastapi-app-local-modal
 ```
 
 Note: If you want to use another modal then you have download it first, and update the path in python code and in docker file.
+
+5. you can run below curl command in your terminal to see result
+   or alternatevely you can use postman or html form post.
+
+```bash
+curl --location 'http://localhost:8000/predict' \
+--header 'Content-Type: application/json' \
+--data '{
+  "text": "I love using open source AI models!"
+}'
+```
+
+which will give response like below
+
+`[{"label":"POSITIVE","score":0.999195396900177}]`
