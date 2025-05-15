@@ -1,6 +1,5 @@
 fastapi
 uvicorn
-openai
 dotenv
 fastapi[all]
 transformers
