@@ -20,7 +20,7 @@ Before you start, ensure you have the following installed:
 1. Verify Python installation
 
 ```bash
-python –version
+python --version
 ```
 
 2. Install the required packages available in the git repo in a file "requirements.txt. Install all the required packages using the below command.
