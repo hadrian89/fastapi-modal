@@ -8,16 +8,16 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy only the script needed to download the model
-COPY download-modal.py .
+COPY download-sentence-transformer-modal.py .
 
 # Run model download inside Docker image
-RUN python download-modal.py
+RUN python download-sentence-transformer-modal.py
 
 # Copy the rest of the application code AFTER model download
 COPY ./app ./app
 
 # Set the entrypoint
-CMD ["uvicorn", "app.main-local:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.sentence-transformer:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # docker build -t fastapi-app-local-modal .
 # docker run -p 8000:8000 fastapi-app-local-modal

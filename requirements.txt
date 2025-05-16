@@ -3,4 +3,5 @@ uvicorn
 dotenv
 fastapi[all]
 transformers
+sentence_transformers
 torch  # or 'tensorflow' if your model needs it

@@ -33,13 +33,13 @@ pip install -r requirements.txt
 3. run below command to download modal once, it will download modal and place in `app/modals` directory
 
 ```bash
-python download-modal.py
+python download-sentence-transformer-modal.py
 ```
 
 4. run below command to start server
 
 ```bash
-uvicorn app.main-local:app --reload --port 8000
+uvicorn app.sentence-transformer:app --reload --port 8000
 ```
 
 or if you want to docker file then run below command
@@ -68,3 +68,44 @@ curl --location 'http://localhost:8000/predict' \
 which will give response like below
 
 `[{"label":"POSITIVE","score":0.999195396900177}]`
+
+
+# To use sentense transformer you need to update Dockerfile
+for sentense transformer run below
+
+```bash
+python download-sentiment-analysis-modal.py
+```
+
+4. run below command to start server
+
+```bash
+uvicorn app.sentiment-analysis:app --reload --port 8000
+```
+
+use below curl command to execute
+
+```bash
+curl --location 'http://localhost:8000/embed' \
+--header 'Content-Type: application/json' \
+--data '{
+    "sentences": [
+        "I love cats",
+        "Cats are cute animals"
+    ]
+}'
+```
+
+which will give response like below
+
+`{
+    "embeddings": [
+        [
+            0.030768781900405884,
+            -0.013215468265116215,
+            ....
+        ]
+    ]
+}`
+
+Note: before deployment sentense transfer you need to update Dockerfile
