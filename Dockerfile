@@ -1,17 +1,25 @@
-FROM python:3.11-slim
+FROM python:3.10-slim
 
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Copy and install requirements
+# Copy requirement files and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application code
-COPY app/ app/
+# Copy the application code
+# Copy only the script needed to download the model
+COPY download-modal.py .
+
+# Run model download inside Docker image
+RUN python download-modal.py
+
+# Copy the rest of the application code AFTER model download
+COPY ./app ./app
 
 # Expose port
 EXPOSE 8000
 
-# Start the app
+# Set the entrypoint
 CMD ["uvicorn", "app.main-local:app", "--host", "0.0.0.0", "--port", "8000"]
