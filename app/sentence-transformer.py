@@ -30,4 +30,4 @@ async def get_embeddings(input_data: TextInputTransformer):
     embeddings = classifier.encode(input_data.sentences, convert_to_numpy=True)
     return {"embeddings": embeddings.tolist()}
 
-# uvicorn app.main-local:app --reload --port 8000  
+# uvicorn app.sentence-transformer:app --reload --port 8000  

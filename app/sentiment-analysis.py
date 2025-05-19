@@ -7,7 +7,8 @@ import torch.nn.functional as F
 app = FastAPI()
 
 # Load sentiment-analysis model from local directory
-MODEL_PATH = "./app/models/distilbert-base-uncased-finetuned-sst-2-english/models--distilbert-base-uncased-finetuned-sst-2-english/snapshots/714eb0fa89d2f80546fda750413ed43d93601a13"
+# MODEL_PATH = "./app/models/distilbert-base-uncased-finetuned-sst-2-english/models--distilbert-base-uncased-finetuned-sst-2-english/snapshots/714eb0fa89d2f80546fda750413ed43d93601a13"
+MODEL_PATH = "./app/models/yeniguno/bert-uncased-intent-classification/models--yeniguno--bert-uncased-intent-classification/snapshots/8caf4318fa58f70fe355088687e912622ae83c51"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, local_files_only=True)
 model = AutoModelForSequenceClassification.from_pretrained(MODEL_PATH, local_files_only=True)
 # end to previous model
@@ -25,21 +26,31 @@ async def predict(input: TextInput):
     result = classifier(input.text)
     return result
 
+@app.post("/text-classification")
+async def classification(input: TextInput):
+    classifier = pipeline("text-classification", model=model, tokenizer=tokenizer)
+    result = classifier(input.text)
+    return result
+
 @app.post("/confidence")
 async def predict_sentiment(input: TextInput):
-    # Map label IDs to names (like {0: "NEGATIVE", 1: "POSITIVE"})
-    id2label = model.config.id2label
+    # Set to eval mode
+    model.eval()
+    # Tokenize
     inputs = tokenizer(input.text, return_tensors="pt")
 
-    # Move inputs and model to CPU explicitly
-    model.eval()
+    # Forward pass
     with torch.no_grad():
-        outputs = model(**{k: v.to("cpu") for k, v in inputs.items()})
+        outputs = model(**inputs)
         logits = outputs.logits
+        probs = F.softmax(logits, dim=1)
 
-    probs = F.softmax(logits, dim=1)
+    # Get prediction
     predicted_class_id = torch.argmax(probs, dim=1).item()
     confidence = probs[0][predicted_class_id].item()
+
+    # Optional: Get class names (from config or define manually if known)
+    id2label = model.config.id2label
     label = id2label[predicted_class_id]
 
     return {
@@ -48,4 +59,4 @@ async def predict_sentiment(input: TextInput):
         "class_id": predicted_class_id
     }
     
-# uvicorn app.main-local:app --reload --port 8000  
+# uvicorn app.sentiment-analysis:app --reload --port 8000  
